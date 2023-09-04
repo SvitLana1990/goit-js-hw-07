@@ -31,27 +31,28 @@ function onImageClick(event) {
   }
   const originalImageSrc = target.dataset.source;
   const imageDescription = target.alt;
-  const instance =
-    basicLightbox.create(`<div class="modal"><img class="gallery__image"
+  const instance = basicLightbox.create(
+    `<div class="modal"><img class="gallery__image"
         src="${originalImageSrc}"
         alt="${imageDescription}"
       /></div>
-  `);
-  instance.show();
-  console.log(target);
-
-  const modal = document.querySelector(".modal");
-  modal.addEventListener("click", () => {
-    instance.close();
-    document.removeEventListener("keydown", onEscapePress);
-  });
-  document.addEventListener("keydown", onEscapePress);
-
-  function onEscapePress(event) {
-    if (event.key === "Escape") {
-      instance.close();
-      document.removeEventListener("keydown", onEscapePress);
+  `,
+    {
+      onShow: (instance) => {
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            instance.close();
+          }
+        });
+      },
+      onClose: (instance) => {
+        document.removeEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            instance.close();
+          }
+        });
+      },
     }
-  }
+  );
+  instance.show();
 }
-console.log(galleryItems);
